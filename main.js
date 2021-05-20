@@ -1,22 +1,26 @@
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
+const electronLocalshortcut = require("electron-localshortcut");
 
 function createWindow() {
   const win = new BrowserWindow({
-    //alwaysOnTop: true, // enable always on top to prevent other windows from appearing above it
-    //kiosk: true, // enable kiosk mode, makes it full screen and what not
+    alwaysOnTop: true, // enable always on top to prevent other windows from appearing above it
+    kiosk: true, // enable kiosk mode, makes it full screen and what not
+    transparent: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
+    resizable: false,
   });
 
-  win.loadFile("index.html");
+  electronLocalshortcut.register(win, "Alt+Tab", () => {
+    console.log("Windows Button pressed");
+    return false;
+  });
+
   win.loadURL("https://kaptiva-backend.herokuapp.com");
-  // win.loadURL(url.format({
-  //     pathname: path.join(__dirname,"index.html"),
-  //     protocol: 'file',
-  //     slashes: true
-  // }));
+
+  win.setMenu(null);
   win.once("ready-to-show", () => {
     win.show();
   });
